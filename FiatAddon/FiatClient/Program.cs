@@ -23,6 +23,7 @@ builder.Services.AddOptions<AppConfig>()
 var app = builder.Build();
 
 var persistentHaEntities = new ConcurrentDictionary<string, DateTime>();
+var vehiculePlugged = new ConcurrentDictionary<string, bool>();
 
 var appConfig = builder.Configuration.Get<AppConfig>();
 var forceLoopResetEvent = new AutoResetEvent(false);
@@ -62,12 +63,13 @@ await app.RunAsync(async (CoconaAppContext ctx) =>
             {
                 Log.Information($"Found : {vehicle.Nickname} {vehicle.Vin}");
               
-                if (appConfig.AutoRefreshBattery)
+                vehiculePlugged.TryAdd(vehicle.Vin,false);
+
+                if (vehiculePlugged[vehicle.Vin] && appConfig.AutoDeepRefresh)
                 {
                   await TrySendCommand(fiatClient, FiatCommand.DEEPREFRESH, vehicle.Vin);
+                  await Task.Delay(TimeSpan.FromSeconds(6), ctx.CancellationToken);
                 }
-              
-                await Task.Delay(TimeSpan.FromSeconds(10), ctx.CancellationToken);
 
                 var haDevice = new HaDevice()
                 {
@@ -79,6 +81,10 @@ await app.RunAsync(async (CoconaAppContext ctx) =>
                 };
 
                 IEnumerable<HaEntity> haEntities = await GetHaEntities(haClient, mqttClient, vehicle, haDevice);
+
+                var plugged = Convert.ToBoolean(haEntities.OfType<HaSensor>().Single(s => s.Name.EndsWith("evinfo_battery_pluginstatus", StringComparison.InvariantCultureIgnoreCase)).Value);
+                if (plugged && !vehiculePlugged[vehicle.Vin]) { forceLoopResetEvent.Set(); }
+                vehiculePlugged[vehicle.Vin] = plugged;
 
                 if (persistentHaEntities.TryAdd(vehicle.Vin,DateTime.Now))
                 {
@@ -188,7 +194,6 @@ IEnumerable<HaEntity> CreateInteractiveEntities(CoconaAppContext ctx, FiatClient
     });
 
 
-
     var hvacButton = new HaButton(mqttClient, "500e_HVAC", haDevice, async button =>
     {
         if (await TrySendCommand(fiatClient, FiatCommand.ROPRECOND, vehicle.Vin))
@@ -233,6 +238,7 @@ async Task<IEnumerable<HaEntity>> GetHaEntities(HaRestApi haClient, SimpleMqttCl
 
     bool charging = false;
     string charginglevel = "battery_timetofullychargel2";
+    
     DateTime refChargeEndTime = DateTime.Now;
 
     List<HaEntity> haEntities = compactDetails.Select(detail =>
@@ -387,4 +393,3 @@ DateTime GetLocalTime(long timeStamp)
 {
     return DateTimeOffset.FromUnixTimeMilliseconds(timeStamp).UtcDateTime.ToLocalTime();
 }
-
