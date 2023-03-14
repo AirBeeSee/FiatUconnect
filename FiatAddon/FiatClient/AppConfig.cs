@@ -22,6 +22,7 @@ public record AppConfig
   public int StartDelaySeconds { get; set; } = 2; 
 
   public bool Debug { get; set; } = false;
+  public bool AutoDeepRefresh { get; set; } = false;
 
   public string ToStringWithoutSecrets()
   {
