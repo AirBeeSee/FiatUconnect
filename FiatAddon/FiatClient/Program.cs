@@ -64,7 +64,7 @@ await app.RunAsync(async (CoconaAppContext ctx) =>
                 Log.Information($"Found : {vehicle.Nickname} {vehicle.Vin}");
               
                 vehiculePlugged.TryAdd(vehicle.Vin,false);
-                Log.Information("vehiculePlugged[vehicle.Vin] : {0}" , vehiculePlugged[vehicle.Vin]);
+                Log.Information($"vehiculePlugged[vehicle.Vin] : {vehiculePlugged[vehicle.Vin]} {appConfig.AutoDeepRefresh}");
                 if (vehiculePlugged[vehicle.Vin] && appConfig.AutoDeepRefresh)
                 {
                   await TrySendCommand(fiatClient, FiatCommand.DEEPREFRESH, vehicle.Vin);
@@ -82,7 +82,14 @@ await app.RunAsync(async (CoconaAppContext ctx) =>
 
                 IEnumerable<HaEntity> haEntities = await GetHaEntities(haClient, mqttClient, vehicle, haDevice);
 
+              var xx = haEntities.OfType<HaSensor>().SingleOrDefault(s => s.Name.EndsWith("evinfo_battery_pluginstatus", StringComparison.InvariantCultureIgnoreCase) );
+              if (xx != null)
+              {
+                 Log.Information($"pluginstatus : {xx.Value}");
+              }
+              
                 var plugged = haEntities.OfType<HaSensor>().Any(s => s.Name.EndsWith("evinfo_battery_pluginstatus", StringComparison.InvariantCultureIgnoreCase) && s.Value.Equals("On", StringComparison.InvariantCultureIgnoreCase));
+                Log.Information($"plugged : {plugged}");
                 if (plugged && !vehiculePlugged[vehicle.Vin]) { forceLoopResetEvent.Set(); }
                 vehiculePlugged[vehicle.Vin] = plugged;
 
