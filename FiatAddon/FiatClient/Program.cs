@@ -132,6 +132,7 @@ await app.RunAsync(async (CoconaAppContext ctx) =>
 
         if (!ctx.CancellationToken.IsCancellationRequested && appConfig.AutoDeepRefresh && vinPlugged.Any())
         {
+            Log.Information("AutoDeepRefresh");
             foreach(string vin in vinPlugged) { await TrySendCommand(fiatClient, FiatCommand.DEEPREFRESH, vin); }
             await Task.Delay(TimeSpan.FromSeconds(6), ctx.CancellationToken);
         }
@@ -184,6 +185,8 @@ IEnumerable<HaEntity> CreateInteractiveEntities(CoconaAppContext ctx, FiatClient
     {
         if (appConfig.AutoDeepRefresh)
         {
+            Log.Information("Force AutoDeepRefresh");
+
             forceLoopResetEvent.Set();
         }
         else if (vinPlugged.Contains(vehicle.Vin))
