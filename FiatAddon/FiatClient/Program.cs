@@ -23,7 +23,8 @@ builder.Services.AddOptions<AppConfig>()
 var app = builder.Build();
 
 var persistentHaEntities = new ConcurrentDictionary<string, DateTime>();
-var vehiculePlugged = new ConcurrentDictionary<string, bool>();
+var vinPlugged = new  HashSet<string>();
+
 
 var appConfig = builder.Configuration.Get<AppConfig>();
 var forceLoopResetEvent = new AutoResetEvent(false);
@@ -49,6 +50,8 @@ await app.RunAsync(async (CoconaAppContext ctx) =>
 
     await mqttClient.Connect();
 
+    
+
     while (!ctx.CancellationToken.IsCancellationRequested)
     {
         Log.Information("Now fetching new data...");
@@ -63,14 +66,6 @@ await app.RunAsync(async (CoconaAppContext ctx) =>
             {
                 Log.Information($"Found : {vehicle.Nickname} {vehicle.Vin}");
               
-                vehiculePlugged.TryAdd(vehicle.Vin,false);
-                
-                if (vehiculePlugged[vehicle.Vin] && appConfig.AutoDeepRefresh)
-                {
-                  await TrySendCommand(fiatClient, FiatCommand.DEEPREFRESH, vehicle.Vin);
-                  await Task.Delay(TimeSpan.FromSeconds(6), ctx.CancellationToken);
-                }
-
                 var haDevice = new HaDevice()
                 {
                     Name = string.IsNullOrEmpty(vehicle.Nickname) ? "Fiat" : vehicle.Nickname,
@@ -83,8 +78,18 @@ await app.RunAsync(async (CoconaAppContext ctx) =>
                 IEnumerable<HaEntity> haEntities = await GetHaEntities(haClient, mqttClient, vehicle, haDevice);
               
                 var plugged = haEntities.OfType<HaSensor>().Any(s => s.Name.EndsWith("evinfo_battery_pluginstatus", StringComparison.InvariantCultureIgnoreCase) && s.Value.Equals("True", StringComparison.InvariantCultureIgnoreCase));
-                if (plugged && !vehiculePlugged[vehicle.Vin]) { forceLoopResetEvent.Set(); }
-                vehiculePlugged[vehicle.Vin] = plugged;
+                if (plugged)
+                {
+                    if (!vinPlugged.Contains(vehicle.Vin))
+                    {
+                        vinPlugged.Add(vehicle.Vin);
+                        forceLoopResetEvent.Set();
+                    }
+                }
+                else
+                {
+                    vinPlugged.Remove(vehicle.Vin);
+                }
 
                 if (persistentHaEntities.TryAdd(vehicle.Vin,DateTime.Now))
                 {
@@ -124,6 +129,13 @@ await app.RunAsync(async (CoconaAppContext ctx) =>
         Log.Information("Fetching COMPLETED. Next update in {0} minutes.", appConfig.RefreshInterval);
 
         WaitHandle.WaitAny(new[] { ctx.CancellationToken.WaitHandle, forceLoopResetEvent }, TimeSpan.FromMinutes(appConfig.RefreshInterval));
+
+        if (!ctx.CancellationToken.IsCancellationRequested && appConfig.AutoDeepRefresh && vinPlugged.Any())
+        {
+            foreach(string vin in vinPlugged) { await TrySendCommand(fiatClient, FiatCommand.DEEPREFRESH, vin); }
+            await Task.Delay(TimeSpan.FromSeconds(6), ctx.CancellationToken);
+        }
+
     }
 });
 
@@ -170,10 +182,17 @@ IEnumerable<HaEntity> CreateInteractiveEntities(CoconaAppContext ctx, FiatClient
 
     var deepRefreshButton = new HaButton(mqttClient, "500e_DeepRefresh", haDevice, async button =>
     {
-        if (await TrySendCommand(fiatClient, FiatCommand.DEEPREFRESH, vehicle.Vin))
+        if (appConfig.AutoDeepRefresh)
         {
-            await Task.Delay(TimeSpan.FromSeconds(6), ctx.CancellationToken);
             forceLoopResetEvent.Set();
+        }
+        else if (vinPlugged.Contains(vehicle.Vin))
+        {
+            if (await TrySendCommand(fiatClient, FiatCommand.DEEPREFRESH, vehicle.Vin))
+            {
+                await Task.Delay(TimeSpan.FromSeconds(6), ctx.CancellationToken);
+                forceLoopResetEvent.Set();
+            }
         }
     });
 
