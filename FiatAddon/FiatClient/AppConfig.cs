@@ -35,9 +35,6 @@ public record AppConfig
       FiatPw = new string('*', this.FiatPw.Length),
       MqttPw = new string('*', this.MqttPw.Length),
       FiatPin = new string('*', this.FiatPin?.Length ?? 0),
-      StartDelaySeconds = new string('*', 5),
-      RefreshInterval = new string('*', 5),
-      AutoDeepRefresh = new string('*', 5),
     };
 
     return JsonConvert.SerializeObject(tmp, Formatting.Indented, new StringEnumConverter());
