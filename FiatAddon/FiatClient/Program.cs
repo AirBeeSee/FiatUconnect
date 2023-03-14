@@ -88,7 +88,7 @@ await app.RunAsync(async (CoconaAppContext ctx) =>
                  Log.Information($"pluginstatus : {xx.Value}");
               }
               
-                var plugged = haEntities.OfType<HaSensor>().Any(s => s.Name.EndsWith("evinfo_battery_pluginstatus", StringComparison.InvariantCultureIgnoreCase) && s.Value.Equals("On", StringComparison.InvariantCultureIgnoreCase));
+                var plugged = haEntities.OfType<HaSensor>().Any(s => s.Name.EndsWith("evinfo_battery_pluginstatus", StringComparison.InvariantCultureIgnoreCase) && s.Value.Equals("True", StringComparison.InvariantCultureIgnoreCase));
                 Log.Information($"plugged : {plugged}");
                 if (plugged && !vehiculePlugged[vehicle.Vin]) { forceLoopResetEvent.Set(); }
                 vehiculePlugged[vehicle.Vin] = plugged;
