@@ -61,6 +61,13 @@ await app.RunAsync(async (CoconaAppContext ctx) =>
             foreach (var vehicle in await fiatClient.Fetch())
             {
                 Log.Information($"Found : {vehicle.Nickname} {vehicle.Vin}");
+              
+                if (appConfig.AutoRefreshBattery)
+                {
+                  await TrySendCommand(fiatClient, FiatCommand.DEEPREFRESH, vehicle.Vin);
+                }
+              
+                await Task.Delay(TimeSpan.FromSeconds(10), ctx.CancellationToken);
 
                 var haDevice = new HaDevice()
                 {
