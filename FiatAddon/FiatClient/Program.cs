@@ -146,7 +146,7 @@ async Task<bool> TrySendCommand(FiatClient fiatClient, FiatCommand command, stri
     }
     catch (Exception e)
     {
-        Log.Error("Command: {0} ERROR. Maybe wrong pin?", command.Message);
+        Log.Error("Command: {0} ERROR : {1}", command.Message,e.Message);
         Log.Debug("{0}", e);
         return false;
     }
