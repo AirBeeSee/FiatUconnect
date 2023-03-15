@@ -50,8 +50,6 @@ await app.RunAsync(async (CoconaAppContext ctx) =>
 
     await mqttClient.Connect();
 
-    
-
     while (!ctx.CancellationToken.IsCancellationRequested)
     {
         Log.Information("Now fetching new data...");
@@ -77,20 +75,6 @@ await app.RunAsync(async (CoconaAppContext ctx) =>
 
                 IEnumerable<HaEntity> haEntities = await GetHaEntities(haClient, mqttClient, vehicle, haDevice);
               
-                var plugged = haEntities.OfType<HaSensor>().Any(s => s.Name.EndsWith("evinfo_battery_pluginstatus", StringComparison.InvariantCultureIgnoreCase) && s.Value.Equals("True", StringComparison.InvariantCultureIgnoreCase));
-                if (plugged)
-                {
-                    if (!vinPlugged.Contains(vehicle.Vin))
-                    {
-                        vinPlugged.Add(vehicle.Vin);
-                        forceLoopResetEvent.Set();
-                    }
-                }
-                else
-                {
-                    vinPlugged.Remove(vehicle.Vin);
-                }
-
                 if (persistentHaEntities.TryAdd(vehicle.Vin,DateTime.Now))
                 {
                     Log.Information("Pushing new sensors to Home Assistant");
@@ -260,6 +244,7 @@ async Task<IEnumerable<HaEntity>> GetHaEntities(HaRestApi haClient, SimpleMqttCl
 
     bool charging = false;
     string charginglevel = "battery_timetofullychargel2";
+    string batteryPluginstatus = "battery_pluginstatus";
     
     DateTime refChargeEndTime = DateTime.Now;
 
@@ -361,6 +346,21 @@ async Task<IEnumerable<HaEntity>> GetHaEntities(HaRestApi haClient, SimpleMqttCl
 
            return sensor as HaEntity;
        }).ToList();
+
+
+    var plugged = haEntities.OfType<HaSensor>().Any(s => s.Name.EndsWith(batteryPluginstatus, StringComparison.InvariantCultureIgnoreCase) && s.Value.Equals("True", StringComparison.InvariantCultureIgnoreCase));
+    if (plugged)
+    {
+        if (!vinPlugged.Contains(vehicle.Vin))
+        {
+            vinPlugged.Add(vehicle.Vin);
+            forceLoopResetEvent.Set();
+        }
+    }
+    else
+    {
+        vinPlugged.Remove(vehicle.Vin);
+    }
 
     var textChargeDuration = "0";
     var textChargeEndTime = "00:00";
