@@ -23,7 +23,7 @@ builder.Services.AddOptions<AppConfig>()
 var app = builder.Build();
 
 var persistentHaEntities = new ConcurrentDictionary<string, DateTime>();
-var vinPlugged = new  HashSet<string>();
+var vinDeepRefresh = new  HashSet<string>();
 
 
 var appConfig = builder.Configuration.Get<AppConfig>();
@@ -114,10 +114,10 @@ await app.RunAsync(async (CoconaAppContext ctx) =>
 
         WaitHandle.WaitAny(new[] { ctx.CancellationToken.WaitHandle, forceLoopResetEvent }, TimeSpan.FromMinutes(appConfig.RefreshInterval));
 
-        if (!ctx.CancellationToken.IsCancellationRequested && appConfig.AutoDeepRefresh && vinPlugged.Any())
+        if (!ctx.CancellationToken.IsCancellationRequested && appConfig.AutoDeepRefresh && vinDeepRefresh.Any())
         {
             Log.Information("AutoDeepRefresh");
-            foreach(string vin in vinPlugged) { await TrySendCommand(fiatClient, FiatCommand.DEEPREFRESH, vin); }
+            foreach(string vin in vinDeepRefresh) { await TrySendCommand(fiatClient, FiatCommand.DEEPREFRESH, vin); }
             await Task.Delay(TimeSpan.FromSeconds(6), ctx.CancellationToken);
         }
 
@@ -173,7 +173,7 @@ IEnumerable<HaEntity> CreateInteractiveEntities(CoconaAppContext ctx, FiatClient
 
             forceLoopResetEvent.Set();
         }
-        else if (vinPlugged.Contains(vehicle.Vin))
+        else if (vinDeepRefresh.Contains(vehicle.Vin))
         {
             if (await TrySendCommand(fiatClient, FiatCommand.DEEPREFRESH, vehicle.Vin))
             {
@@ -348,27 +348,37 @@ async Task<IEnumerable<HaEntity>> GetHaEntities(HaRestApi haClient, SimpleMqttCl
        }).ToList();
 
 
-    var plugged = haEntities.OfType<HaSensor>().Any(s => s.Name.EndsWith(batteryPluginstatus, StringComparison.InvariantCultureIgnoreCase) && s.Value.Equals("True", StringComparison.InvariantCultureIgnoreCase));
+    /* var plugged = haEntities.OfType<HaSensor>().Any(s => s.Name.EndsWith(batteryPluginstatus, StringComparison.InvariantCultureIgnoreCase) && s.Value.Equals("True", StringComparison.InvariantCultureIgnoreCase));
     if (plugged)
     {
-        if (!vinPlugged.Contains(vehicle.Vin))
+        if (!vinDeepRefresh.Contains(vehicle.Vin))
         {
-            vinPlugged.Add(vehicle.Vin);
+            vinDeepRefresh.Add(vehicle.Vin);
             forceLoopResetEvent.Set();
         }
     }
     else
     {
-        vinPlugged.Remove(vehicle.Vin);
-    }
+        vinDeepRefresh.Remove(vehicle.Vin);
+    } */
 
     var textChargeDuration = "0";
     var textChargeEndTime = "00:00";
     if (charging)
     {
+        if (!vinDeepRefresh.Contains(vehicle.Vin))
+        {
+            vinDeepRefresh.Add(vehicle.Vin);
+            forceLoopResetEvent.Set();
+        }
+
         var chargeDuration = Convert.ToInt32(haEntities.OfType<HaSensor>().Single(s => s.Name.EndsWith(charginglevel, StringComparison.InvariantCultureIgnoreCase)).Value);
         textChargeDuration = $"{chargeDuration / 60}:{$"{chargeDuration % 60}".PadLeft(2, '0')}";
         textChargeEndTime = refChargeEndTime.AddMinutes(chargeDuration).ToString("H:mm");
+    }
+    else
+    {
+        vinDeepRefresh.Remove(vehicle.Vin);
     }
 
     haEntities.Add(new HaSensor(mqttClient, "500e_Charge_Duration", haDevice, false)
