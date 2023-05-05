@@ -310,9 +310,9 @@ async Task<IEnumerable<HaEntity>> GetHaEntities(HaRestApi haClient, SimpleMqttCl
            if (detail.Key.EndsWith("_timestamp", StringComparison.InvariantCultureIgnoreCase))
            {
                value = GetLocalTime(Convert.ToInt64(detail.Value)).ToString("dd/MM HH:mm:ss");
-               deviceClass = "timestamp";
+               deviceClass = "duration";
            }
-
+/*
            if (detail.Key.EndsWith("_value", StringComparison.InvariantCultureIgnoreCase))
            {
                var unitKey = detail.Key.Replace("_value", "_unit", StringComparison.InvariantCultureIgnoreCase);
@@ -336,7 +336,9 @@ async Task<IEnumerable<HaEntity>> GetHaEntities(HaRestApi haClient, SimpleMqttCl
                        unit = tmpUnit;
                        break;
                }
+              
            }
+           */
 
            var sensor = new HaSensor(mqttClient, detail.Key, haDevice, binary)
            {
@@ -384,13 +386,13 @@ async Task<IEnumerable<HaEntity>> GetHaEntities(HaRestApi haClient, SimpleMqttCl
 
     haEntities.Add(new HaSensor(mqttClient, "500e_Charge_Duration", haDevice, false)
     {
-        DeviceClass = "timestamp",
+        DeviceClass = "duration",
         Value = textChargeDuration,
     });
 
     haEntities.Add(new HaSensor(mqttClient, "500e_Charge_Endtime", haDevice, false)
     {
-        DeviceClass = "timestamp",
+        DeviceClass = "duration",
         Value = textChargeEndTime,
     });
 
