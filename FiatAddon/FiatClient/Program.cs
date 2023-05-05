@@ -89,7 +89,7 @@ await app.RunAsync(async (CoconaAppContext ctx) =>
                 Log.Information("Pushing sensors values to Home Assistant");
                 await Parallel.ForEachAsync(haEntities, async (sensor, token) => { await sensor.PublishState(); });
 
-                var lastUpdate = new HaSensor(mqttClient, "500e_LastUpdate", haDevice, false) { Value = DateTime.Now.ToString("dd/MM HH:mm:ss"), DeviceClass = "date" };
+                var lastUpdate = new HaSensor(mqttClient, "500e_LastUpdate", haDevice, false) { Value = DateTime.Now.ToString("dd/MM HH:mm:ss"), DeviceClass = "timestamp" };
                 await lastUpdate.Announce();
                 await lastUpdate.PublishState();
             }
@@ -310,7 +310,7 @@ async Task<IEnumerable<HaEntity>> GetHaEntities(HaRestApi haClient, SimpleMqttCl
            if (detail.Key.EndsWith("_timestamp", StringComparison.InvariantCultureIgnoreCase))
            {
                value = GetLocalTime(Convert.ToInt64(detail.Value)).ToString("dd/MM HH:mm:ss");
-               deviceClass = "date";
+               deviceClass = "timestamp";
            }
 /*
            if (detail.Key.EndsWith("_value", StringComparison.InvariantCultureIgnoreCase))
@@ -386,13 +386,13 @@ async Task<IEnumerable<HaEntity>> GetHaEntities(HaRestApi haClient, SimpleMqttCl
 
     haEntities.Add(new HaSensor(mqttClient, "500e_Charge_Duration", haDevice, false)
     {
-        DeviceClass = "time",
+        DeviceClass = "timestamp",
         Value = textChargeDuration,
     });
 
     haEntities.Add(new HaSensor(mqttClient, "500e_Charge_Endtime", haDevice, false)
     {
-        DeviceClass = "date",
+        DeviceClass = "timestamp",
         Value = textChargeEndTime,
     });
 
@@ -414,7 +414,7 @@ async Task<IEnumerable<HaEntity>> GetHaEntities(HaRestApi haClient, SimpleMqttCl
     var trackerTimeStamp = new HaSensor(mqttClient, "500e_Location_TimeStamp", haDevice, false)
     {
         Value = GetLocalTime(vehicle.Location.TimeStamp).ToString("dd/MM HH:mm:ss"),
-        DeviceClass = "date"
+        DeviceClass = "timestamp"
     };
 
     haEntities.Add(trackerTimeStamp);
