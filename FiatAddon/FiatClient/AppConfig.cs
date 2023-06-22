@@ -23,7 +23,7 @@ public record AppConfig
 
   public bool Debug { get; set; } = false;
   public bool AutoDeepRefresh { get; set; } = false;
-  [Range(1, 1440)] public int AutoDeepInterval { get; set; } = 15;
+
 
   public string ToStringWithoutSecrets()
   {
