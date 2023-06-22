@@ -13,7 +13,7 @@ public record AppConfig
   [Range(1, 65536)] public int MqttPort { get; set; } = 1883;
   public string MqttUser { get; set; } = "";
   public string MqttPw { get; set; } = "";
-  [Range(1, 1440)] public int RefreshInterval { get; set; } = 15;
+  [Range(1, 1440)] public int RefreshInterval { get; set; } = 10;
   
   [Required(AllowEmptyStrings = false)]
   public string SupervisorToken { get; set; } = null!;
@@ -23,6 +23,7 @@ public record AppConfig
 
   public bool Debug { get; set; } = false;
   public bool AutoDeepRefresh { get; set; } = false;
+  [Range(1, 1440)] public int AutoDeepInterval { get; set; } = 15;
 
   public string ToStringWithoutSecrets()
   {
