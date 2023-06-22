@@ -18,8 +18,6 @@ options:
   RefreshInterval: 10
   Debug: false
   AutoDeepRefresh: false
-  AutoDeepInterval: 15
-  
 
   StartDelaySeconds: 2
 schema:
@@ -29,7 +27,6 @@ schema:
   RefreshInterval: int
   Debug: bool
   AutoDeepRefresh: bool
-  AutoDeepInterval: int
   StartDelaySeconds: int?
 arch:
   - amd64
