@@ -368,7 +368,6 @@ async Task<IEnumerable<HaEntity>> GetHaEntities(HaRestApi haClient, SimpleMqttCl
         if (!vinPlugged.Contains(vehicle.Vin))
         {
             vinPlugged.Add(vehicle.Vin);
-            forceLoopDeepEvent.Set();
         }
     }
     else
