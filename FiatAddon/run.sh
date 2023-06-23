@@ -14,6 +14,7 @@ export FiatUconnect_FiatPin=$(bashio::config 'FiatPin')
 export FiatUconnect_Debug=$(bashio::config 'Debug')
 export FiatUconnect_RefreshInterval=$(bashio::config 'RefreshInterval')
 export FiatUconnect_AutoDeepRefresh=$(bashio::config 'AutoDeepRefresh')
+export FiatUconnect_AutoDeepInterval=$(bashio::config 'AutoDeepInterval')
 export FiatUconnect_StartDelaySeconds=$(bashio::config 'StartDelaySeconds')
 
 cd /build/
