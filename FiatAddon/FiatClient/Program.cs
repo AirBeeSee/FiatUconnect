@@ -29,6 +29,7 @@ var vinPlugged = new  HashSet<string>();
 
 var appConfig = builder.Configuration.Get<AppConfig>();
 var forceLoopResetEvent = new AutoResetEvent(false);
+var forceLoopDeepEvent = new AutoResetEvent(false);
 var haClient = new HaRestApi(appConfig.HomeAssistantUrl, appConfig.SupervisorToken);
 
 Log.Logger = new LoggerConfiguration()
@@ -64,10 +65,9 @@ _ = Task.Run(async () =>
                     Log.Information("AutoDeepRefresh COMPLETED. Next update in {0} minutes.", appConfig.AutoDeepInterval);
                     forceLoopResetEvent.Set();
                 }
-                WaitHandle.WaitAny(new[] { ctx.CancellationToken.WaitHandle }, TimeSpan.FromMinutes(appConfig.AutoDeepInterval));
+                WaitHandle.WaitAny(new[] { ctx.CancellationToken.WaitHandle ,forceLoopDeepEvent }, TimeSpan.FromMinutes(appConfig.AutoDeepInterval));
             }
     });
-  
 
 
     while (!ctx.CancellationToken.IsCancellationRequested)
@@ -368,7 +368,7 @@ async Task<IEnumerable<HaEntity>> GetHaEntities(HaRestApi haClient, SimpleMqttCl
         if (!vinPlugged.Contains(vehicle.Vin))
         {
             vinPlugged.Add(vehicle.Vin);
-            forceLoopResetEvent.Set();
+            forceLoopDeepEvent.Set();
         }
     }
     else
@@ -383,7 +383,7 @@ async Task<IEnumerable<HaEntity>> GetHaEntities(HaRestApi haClient, SimpleMqttCl
         if (!vinCharging.Contains(vehicle.Vin))
         {
             vinCharging.Add(vehicle.Vin);
-            forceLoopResetEvent.Set();
+            forceLoopDeepEvent.Set();
         }
 
         var chargeDuration = Convert.ToInt32(haEntities.OfType<HaSensor>().Single(s => s.Name.EndsWith(charginglevel, StringComparison.InvariantCultureIgnoreCase)).Value);
