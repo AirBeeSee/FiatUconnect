@@ -51,6 +51,25 @@ await app.RunAsync(async (CoconaAppContext ctx) =>
 
     await mqttClient.Connect();
 
+
+_ = Task.Run(async () =>
+    {
+            while (!ctx.CancellationToken.IsCancellationRequested)
+            {
+                if (!ctx.CancellationToken.IsCancellationRequested && appConfig.AutoDeepRefresh && vinCharging.Any())
+                {
+                    Log.Information("AutoDeepRefresh");
+                    foreach(string vin in vinCharging) { await TrySendCommand(fiatClient, FiatCommand.DEEPREFRESH, vin); }
+                    await Task.Delay(TimeSpan.FromSeconds(6), ctx.CancellationToken);
+                    Log.Information("AutoDeepRefresh COMPLETED. Next update in {0} minutes.", appConfig.AutoDeepInterval);
+                    forceLoopResetEvent.Set();
+                }
+                WaitHandle.WaitAny(new[] { ctx.CancellationToken.WaitHandle }, TimeSpan.FromMinutes(appConfig.AutoDeepInterval));
+            }
+    });
+  
+
+
     while (!ctx.CancellationToken.IsCancellationRequested)
     {
         Log.Information("Now fetching new data...");
@@ -118,13 +137,7 @@ await app.RunAsync(async (CoconaAppContext ctx) =>
         Log.Information("Fetching COMPLETED. Next update in {0} minutes.", appConfig.RefreshInterval);
 
         WaitHandle.WaitAny(new[] { ctx.CancellationToken.WaitHandle, forceLoopResetEvent }, TimeSpan.FromMinutes(appConfig.RefreshInterval));
-
-        if (!ctx.CancellationToken.IsCancellationRequested && appConfig.AutoDeepRefresh && vinCharging.Any())
-        {
-            Log.Information("AutoDeepRefresh");
-            foreach(string vin in vinCharging) { await TrySendCommand(fiatClient, FiatCommand.DEEPREFRESH, vin); }
-            await Task.Delay(TimeSpan.FromSeconds(6), ctx.CancellationToken);
-        }
+  
 
     }
 });
@@ -172,13 +185,7 @@ IEnumerable<HaEntity> CreateInteractiveEntities(CoconaAppContext ctx, FiatClient
 
     var deepRefreshButton = new HaButton(mqttClient, "500e_DeepRefresh", haDevice, async button =>
     {
-        if (appConfig.AutoDeepRefresh && vinCharging.Contains(vehicle.Vin)) 
-        {
-            Log.Information("Force AutoDeepRefresh");
-
-            forceLoopResetEvent.Set();
-        } 
-        else if (vinPlugged.Contains(vehicle.Vin))
+        if (vinPlugged.Contains(vehicle.Vin))
         {
             if (await TrySendCommand(fiatClient, FiatCommand.DEEPREFRESH, vehicle.Vin))
             {
