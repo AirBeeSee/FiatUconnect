@@ -114,7 +114,7 @@ public class FiatClient
       }
       else
       {
-      _ loginUrl = "https://login-us.alfaromeo.com";      
+       _loginUrl = "https://login-us.alfaromeo.com";      
       }
     }
     else if (_brand == FcaBrand.Jeep)
