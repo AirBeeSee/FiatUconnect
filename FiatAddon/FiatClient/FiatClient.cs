@@ -58,15 +58,15 @@ public class FiatClient
 
     if (_brand == FcaBrand.Debug)
     {
-       _loginApiKey = "3_mOx_J2dRgjXYCdyhchv3b5lhi54eBcdCTX4BI8MORqmZCoQWhA0mV2PTlptLGUQI";
-      _apiKey = "OgNqp2eAv84oZvMrXPIzP8mR8a6d9bVm1aaH9LqU";
-        _loginUrl = "https://login.alfaromeo.com";
-      _tokenUrl = "https://authz.sdpr-02.fcagcv.com/v2/cognito/identity/token";
-      _apiUrl = "https://channels.sdpr-02.fcagcv.com";
-      _authApiKey = "JWRYW7IYhW9v0RqDghQSx4UcRYRILNmc8zAuh5ys"; // UNKNOWN
-      _authUrl = "https://mfa.fcl-01.fcagcv.com"; // UNKNOWN
-      _locale = "en_us";
-      _awsEndpoint = RegionEndpoint.USEast1;
+      _loginApiKey = "3_mOx_J2dRgjXYCdyhchv3b5lhi54eBcdCTX4BI8MORqmZCoQWhA0mV2PTlptLGUQI";
+      _apiKey = "2wGyL6PHec9o1UeLPYpoYa1SkEWqeBur9bLsi24i";
+      _loginUrl = "https://loginmyuconnect.fiat.com";
+      _tokenUrl = "https://authz.sdpr-01.fcagcv.com/v2/cognito/identity/token";
+      _apiUrl = "https://channels.sdpr-01.fcagcv.com";
+      _authApiKey = "JWRYW7IYhW9v0RqDghQSx4UcRYRILNmc8zAuh5ys"; // for pin
+      _authUrl = "https://mfa.fcl-01.fcagcv.com"; // for pin
+      _locale = "de_de"; // for pin
+      _awsEndpoint = RegionEndpoint.EUWest1; 
     }
     else if (_brand == FcaBrand.Fiat)
     {
@@ -202,7 +202,7 @@ public class FiatClient
         {
           
           Log.Error("ERROR WHILE REFRESH SESSION");
-          Log.Debug("Login : {0}", e);
+          Log.Debug("login {0}", e);
         }
       }
     });
@@ -217,7 +217,7 @@ public class FiatClient
       .WithCookies(_cookieJar)
       .GetJsonAsync<FiatLoginResponse>();
 
-    Log.Information("loginResponse: {0}", loginResponse.Dump());
+    Log.Debug("loginResponse: {0}", loginResponse.Dump());
 
     loginResponse.ThrowOnError("Login failed.");
 
@@ -235,7 +235,7 @@ public class FiatClient
         }))
       .ReceiveJson<FiatAuthResponse>();
 
-    Log.Information("authResponse : {0}", authResponse.Dump());
+    Log.Debug("authResponse : {0}", authResponse.Dump());
 
     authResponse.ThrowOnError("Authentication failed.");
 
@@ -251,7 +251,7 @@ public class FiatClient
       .WithCookies(_cookieJar)
       .GetJsonAsync<FiatJwtResponse>();
 
-    Log.Information("jwtResponse : {0}", jwtResponse.Dump());
+    Log.Debug("jwtResponse : {0}", jwtResponse.Dump());
 
     jwtResponse.ThrowOnError("Authentication failed.");
 
@@ -265,7 +265,7 @@ public class FiatClient
       })
       .ReceiveJson<FcaIdentityResponse>();
 
-    Log.Information("identityResponse : {0}", identityResponse.Dump());
+    Log.Debug("identityResponse : {0}", identityResponse.Dump());
     
     identityResponse.ThrowOnError("Identity failed.");
 
@@ -337,7 +337,7 @@ public class FiatClient
       .PostJsonAsync(data)
       .ReceiveJson<FcaPinAuthResponse>();
 
-    Log.Information("pinAuthResponse: {0}", pinAuthResponse.Dump());
+    Log.Debug("pinAuthResponse: {0}", pinAuthResponse.Dump());
 
     var json = new
     {
@@ -352,7 +352,7 @@ public class FiatClient
       .PostJsonAsync(json)
       .ReceiveJson<FcaCommandResponse>();
 
-    Log.Information("commandResponse: {0}", commandResponse.Dump());
+    Log.Debug("commandResponse: {0}", commandResponse.Dump());
   }
 
   public async Task<Vehicle[]> Fetch()
@@ -369,7 +369,7 @@ public class FiatClient
       .AwsSign(awsCredentials, _awsEndpoint)
       .GetJsonAsync<VehicleResponse>();
 
-    Log.Information("vehicleResponse: {0}", vehicleResponse.Dump());
+    Log.Debug("vehicleResponse: {0}", vehicleResponse.Dump());
 
     foreach (var vehicle in vehicleResponse.Vehicles)
     {
