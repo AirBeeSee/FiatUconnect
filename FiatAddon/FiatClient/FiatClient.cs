@@ -202,7 +202,7 @@ public class FiatClient
         {
           
           Log.Error("ERROR WHILE REFRESH SESSION");
-          Log.Debug("{0}", e);
+          Log.Debug("Login : {0}", e);
         }
       }
     });
@@ -217,7 +217,7 @@ public class FiatClient
       .WithCookies(_cookieJar)
       .GetJsonAsync<FiatLoginResponse>();
 
-    Log.Debug("loginResponse: {0}", loginResponse.Dump());
+    Log.Information("loginResponse: {0}", loginResponse.Dump());
 
     loginResponse.ThrowOnError("Login failed.");
 
@@ -235,7 +235,7 @@ public class FiatClient
         }))
       .ReceiveJson<FiatAuthResponse>();
 
-    Log.Debug("authResponse : {0}", authResponse.Dump());
+    Log.Information("authResponse : {0}", authResponse.Dump());
 
     authResponse.ThrowOnError("Authentication failed.");
 
@@ -251,7 +251,7 @@ public class FiatClient
       .WithCookies(_cookieJar)
       .GetJsonAsync<FiatJwtResponse>();
 
-    Log.Debug("jwtResponse : {0}", jwtResponse.Dump());
+    Log.Information("jwtResponse : {0}", jwtResponse.Dump());
 
     jwtResponse.ThrowOnError("Authentication failed.");
 
@@ -265,7 +265,7 @@ public class FiatClient
       })
       .ReceiveJson<FcaIdentityResponse>();
 
-    Log.Debug("identityResponse : {0}", identityResponse.Dump());
+    Log.Information("identityResponse : {0}", identityResponse.Dump());
     
     identityResponse.ThrowOnError("Identity failed.");
 
@@ -337,7 +337,7 @@ public class FiatClient
       .PostJsonAsync(data)
       .ReceiveJson<FcaPinAuthResponse>();
 
-    Log.Debug("pinAuthResponse: {0}", pinAuthResponse.Dump());
+    Log.Information("pinAuthResponse: {0}", pinAuthResponse.Dump());
 
     var json = new
     {
@@ -352,7 +352,7 @@ public class FiatClient
       .PostJsonAsync(json)
       .ReceiveJson<FcaCommandResponse>();
 
-    Log.Debug("commandResponse: {0}", commandResponse.Dump());
+    Log.Information("commandResponse: {0}", commandResponse.Dump());
   }
 
   public async Task<Vehicle[]> Fetch()
@@ -369,7 +369,7 @@ public class FiatClient
       .AwsSign(awsCredentials, _awsEndpoint)
       .GetJsonAsync<VehicleResponse>();
 
-    Log.Debug("vehicleResponse: {0}", vehicleResponse.Dump());
+    Log.Information("vehicleResponse: {0}", vehicleResponse.Dump());
 
     foreach (var vehicle in vehicleResponse.Vehicles)
     {
