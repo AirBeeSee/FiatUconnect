@@ -16,7 +16,8 @@ public enum FcaBrand
   Ram,
   Jeep,
   Dodge,
-  AlfaRomeo
+  AlfaRomeo,
+  Debug
 }
 
 public enum FcaRegion
@@ -55,7 +56,19 @@ public class FiatClient
     _brand = brand;
     _region = region;
 
-    if (_brand == FcaBrand.Fiat)
+    if (_brand == FcaBrand.Debug)
+    {
+      _loginApiKey = "3_etlYkCXNEhz4_KJVYDqnK1CqxQjvJStJMawBohJU2ch3kp30b0QCJtLCzxJ93N-M";
+      _apiKey = "OgNqp2eAv84oZvMrXPIzP8mR8a6d9bVm1aaH9LqU";
+      _loginUrl = "https://login.fiat.com";
+      _tokenUrl = "https://authz.sdpr-02.fcagcv.com/v2/cognito/identity/token";
+      _apiUrl = "https://channels.sdpr-02.fcagcv.com";
+      _authApiKey = "JWRYW7IYhW9v0RqDghQSx4UcRYRILNmc8zAuh5ys"; // UNKNOWN
+      _authUrl = "https://mfa.fcl-01.fcagcv.com"; // UNKNOWN
+      _locale = "en_us";
+      _awsEndpoint = RegionEndpoint.USEast1;
+    }
+    else if (_brand == FcaBrand.Fiat)
     {
       if (_region == FcaRegion.Europe)
       {
