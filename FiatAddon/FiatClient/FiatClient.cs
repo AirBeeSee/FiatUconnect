@@ -77,7 +77,7 @@ public class FiatClient
     {
       if (_region == FcaRegion.Europe)
       {
-
+          _loginUrl = "https://loginmyuconnect.fiat.com";
       }
       else
       {
