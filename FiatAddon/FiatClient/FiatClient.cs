@@ -59,22 +59,32 @@ public class FiatClient
     if (_brand == FcaBrand.Debug)
     {
       _loginApiKey = "3_mOx_J2dRgjXYCdyhchv3b5lhi54eBcdCTX4BI8MORqmZCoQWhA0mV2PTlptLGUQI";
-      _apiKey = "2wGyL6PHec9o1UeLPYpoYa1SkEWqeBur9bLsi24i";
+      
       _loginUrl = "https://loginmyuconnect.fiat.com";
-      _tokenUrl = "https://authz.sdpr-01.fcagcv.com/v2/cognito/identity/token";
-      _apiUrl = "https://channels.sdpr-01.fcagcv.com";
+
+      _apiKey = "OgNqp2eAv84oZvMrXPIzP8mR8a6d9bVm1aaH9LqU";
+      _tokenUrl = "https://authz.sdpr-02.fcagcv.com/v2/cognito/identity/token";
+      _apiUrl = "https://channels.sdpr-02.fcagcv.com";
+
       _authApiKey = "JWRYW7IYhW9v0RqDghQSx4UcRYRILNmc8zAuh5ys"; // for pin
       _authUrl = "https://mfa.fcl-01.fcagcv.com"; // for pin
       _locale = "de_de"; // for pin
       _awsEndpoint = RegionEndpoint.EUWest1; 
+
+
+  
+
     }
     else if (_brand == FcaBrand.Fiat)
     {
       if (_region == FcaRegion.Europe)
       {
       _loginApiKey = "3_mOx_J2dRgjXYCdyhchv3b5lhi54eBcdCTX4BI8MORqmZCoQWhA0mV2PTlptLGUQI";
-      _apiKey = "2wGyL6PHec9o1UeLPYpoYa1SkEWqeBur9bLsi24i";
+      
       _loginUrl = "https://loginmyuconnect.fiat.com";
+
+      _apiKey = "2wGyL6PHec9o1UeLPYpoYa1SkEWqeBur9bLsi24i";
+
       _tokenUrl = "https://authz.sdpr-01.fcagcv.com/v2/cognito/identity/token";
       _apiUrl = "https://channels.sdpr-01.fcagcv.com";
       _authApiKey = "JWRYW7IYhW9v0RqDghQSx4UcRYRILNmc8zAuh5ys"; // for pin
@@ -85,10 +95,13 @@ public class FiatClient
       else
       {
       _loginApiKey = "3_etlYkCXNEhz4_KJVYDqnK1CqxQjvJStJMawBohJU2ch3kp30b0QCJtLCzxJ93N-M";
-      _apiKey = "OgNqp2eAv84oZvMrXPIzP8mR8a6d9bVm1aaH9LqU";
+     
       _loginUrl = "https://login-us.fiat.com";
+
+       _apiKey = "OgNqp2eAv84oZvMrXPIzP8mR8a6d9bVm1aaH9LqU";
       _tokenUrl = "https://authz.sdpr-02.fcagcv.com/v2/cognito/identity/token";
       _apiUrl = "https://channels.sdpr-02.fcagcv.com";
+      
       _authApiKey = "JWRYW7IYhW9v0RqDghQSx4UcRYRILNmc8zAuh5ys"; // UNKNOWN
       _authUrl = "https://mfa.fcl-01.fcagcv.com"; // UNKNOWN
       _locale = "en_us";
