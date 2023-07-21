@@ -3,7 +3,7 @@ url: "https://github.com/AirBeeSee/FiatUconnect"
 description: "Connect your FIAT (uconnect) car to Home Assistant. 🚗"
 services:
     - "mqtt:want"
-version: "10.0.14"
+version: "10.0.15"
 homeassistant_api: true
 image: "ghcr.io/airbeesee/image-{arch}-fiat-uconnect"
 slug: "fiat_uconnect"
@@ -29,7 +29,7 @@ schema:
   FiatPw: password
   FiatPin: password?
 
-  Brand: list(Fiat|AlfaRomeo|Ram|Jeep|Dodge|Debug)
+  Brand: list(Fiat|AlfaRomeo|Jeep|Debug)
   Region: list(Europe|US)
   
   RefreshInterval: int
