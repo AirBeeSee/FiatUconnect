@@ -58,20 +58,19 @@ public class FiatClient
 
     if (_brand == FcaBrand.Debug)
     {
-      _loginApiKey = "3_mOx_J2dRgjXYCdyhchv3b5lhi54eBcdCTX4BI8MORqmZCoQWhA0mV2PTlptLGUQI";
+      _loginApiKey = "3_etlYkCXNEhz4_KJVYDqnK1CqxQjvJStJMawBohJU2ch3kp30b0QCJtLCzxJ93N-M";
       
-      _loginUrl = "https://loginmyuconnect.fiat.com";
+       _loginUrl = "https://login-us.alfaromeo.com";
 
-       _apiKey = "2wGyL6PHec9o1UeLPYpoYa1SkEWqeBur9bLsi24i";
+      _apiKey = "2wGyL6PHec9o1UeLPYpoYa1SkEWqeBur9bLsi24i";
 
       _tokenUrl = "https://authz.sdpr-01.fcagcv.com/v2/cognito/identity/token";
-      _apiUrl = "https://channels.sdpr-02.fcagcv.com";
-
+      _apiUrl = "https://channels.sdpr-01.fcagcv.com";
       _authApiKey = "JWRYW7IYhW9v0RqDghQSx4UcRYRILNmc8zAuh5ys"; // for pin
       _authUrl = "https://mfa.fcl-01.fcagcv.com"; // for pin
-      _locale = "de_de"; // for pin
-      _awsEndpoint = RegionEndpoint.EUWest1; 
 
+       _locale = "en_us";
+      _awsEndpoint = RegionEndpoint.USEast1;
 
   
 
