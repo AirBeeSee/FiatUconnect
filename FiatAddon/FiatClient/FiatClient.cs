@@ -58,9 +58,9 @@ public class FiatClient
 
     if (_brand == FcaBrand.Debug)
     {
-      _loginApiKey = "3_etlYkCXNEhz4_KJVYDqnK1CqxQjvJStJMawBohJU2ch3kp30b0QCJtLCzxJ93N-M";
+      _loginApiKey = "3_mOx_J2dRgjXYCdyhchv3b5lhi54eBcdCTX4BI8MORqmZCoQWhA0mV2PTlptLGUQI";
       _apiKey = "OgNqp2eAv84oZvMrXPIzP8mR8a6d9bVm1aaH9LqU";
-      _loginUrl = "https://login.fiat.com";
+      _loginUrl = "https://loginmyuconnect.fiat.com";
       _tokenUrl = "https://authz.sdpr-02.fcagcv.com/v2/cognito/identity/token";
       _apiUrl = "https://channels.sdpr-02.fcagcv.com";
       _authApiKey = "JWRYW7IYhW9v0RqDghQSx4UcRYRILNmc8zAuh5ys"; // UNKNOWN
