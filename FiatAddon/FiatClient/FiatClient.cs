@@ -58,9 +58,9 @@ public class FiatClient
 
     if (_brand == FcaBrand.Debug)
     {
-      _loginApiKey = "3_mOx_J2dRgjXYCdyhchv3b5lhi54eBcdCTX4BI8MORqmZCoQWhA0mV2PTlptLGUQI";
+       _loginApiKey = "3_mOx_J2dRgjXYCdyhchv3b5lhi54eBcdCTX4BI8MORqmZCoQWhA0mV2PTlptLGUQI";
       _apiKey = "OgNqp2eAv84oZvMrXPIzP8mR8a6d9bVm1aaH9LqU";
-      _loginUrl = "https://loginmyuconnect.fiat.com";
+        _loginUrl = "https://login.alfaromeo.com";
       _tokenUrl = "https://authz.sdpr-02.fcagcv.com/v2/cognito/identity/token";
       _apiUrl = "https://channels.sdpr-02.fcagcv.com";
       _authApiKey = "JWRYW7IYhW9v0RqDghQSx4UcRYRILNmc8zAuh5ys"; // UNKNOWN
@@ -217,7 +217,7 @@ public class FiatClient
       .WithCookies(_cookieJar)
       .GetJsonAsync<FiatLoginResponse>();
 
-    Log.Debug("{0}", loginResponse.Dump());
+    Log.Debug("loginResponse: {0}", loginResponse.Dump());
 
     loginResponse.ThrowOnError("Login failed.");
 
@@ -235,7 +235,7 @@ public class FiatClient
         }))
       .ReceiveJson<FiatAuthResponse>();
 
-    Log.Debug("{0}", authResponse.Dump());
+    Log.Debug("authResponse : {0}", authResponse.Dump());
 
     authResponse.ThrowOnError("Authentication failed.");
 
@@ -251,7 +251,7 @@ public class FiatClient
       .WithCookies(_cookieJar)
       .GetJsonAsync<FiatJwtResponse>();
 
-    Log.Debug("{0}", jwtResponse.Dump());
+    Log.Debug("jwtResponse : {0}", jwtResponse.Dump());
 
     jwtResponse.ThrowOnError("Authentication failed.");
 
@@ -265,7 +265,7 @@ public class FiatClient
       })
       .ReceiveJson<FcaIdentityResponse>();
 
-    Log.Debug("{0}", identityResponse.Dump());
+    Log.Debug("identityResponse : {0}", identityResponse.Dump());
     
     identityResponse.ThrowOnError("Identity failed.");
 
@@ -337,7 +337,7 @@ public class FiatClient
       .PostJsonAsync(data)
       .ReceiveJson<FcaPinAuthResponse>();
 
-    Log.Debug("{0}", pinAuthResponse.Dump());
+    Log.Debug("pinAuthResponse: {0}", pinAuthResponse.Dump());
 
     var json = new
     {
@@ -352,7 +352,7 @@ public class FiatClient
       .PostJsonAsync(json)
       .ReceiveJson<FcaCommandResponse>();
 
-    Log.Debug("{0}", commandResponse.Dump());
+    Log.Debug("commandResponse: {0}", commandResponse.Dump());
   }
 
   public async Task<Vehicle[]> Fetch()
@@ -369,7 +369,7 @@ public class FiatClient
       .AwsSign(awsCredentials, _awsEndpoint)
       .GetJsonAsync<VehicleResponse>();
 
-    Log.Debug("{0}", vehicleResponse.Dump());
+    Log.Debug("vehicleResponse: {0}", vehicleResponse.Dump());
 
     foreach (var vehicle in vehicleResponse.Vehicles)
     {
@@ -380,7 +380,7 @@ public class FiatClient
         .AwsSign(awsCredentials, _awsEndpoint)
         .GetJsonAsync<JObject>();
       
-      Log.Debug("{0}", vehicleDetails.Dump());
+      Log.Debug("vehicleDetails: {0}", vehicleDetails.Dump());
 
       vehicle.Details = vehicleDetails;
 
@@ -393,7 +393,7 @@ public class FiatClient
 
       vehicle.Location = vehicleLocation;
 
-      Log.Debug("{0}", vehicleLocation.Dump());
+      Log.Debug("vehicleLocation: {0}", vehicleLocation.Dump());
     }
 
     return vehicleResponse.Vehicles;
