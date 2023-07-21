@@ -40,13 +40,17 @@ Log.Logger = new LoggerConfiguration()
 Log.Information("Delay start for seconds: {0}", appConfig.StartDelaySeconds);
 await Task.Delay(TimeSpan.FromSeconds(appConfig.StartDelaySeconds));
 
+if (appConfig.Brand is FcaBrand.Ram or FcaBrand.Dodge or FcaBrand.AlfaRomeo)
+{
+  Log.Warning("{0} support is experimental.", appConfig.Brand);
+}
 
 await app.RunAsync(async (CoconaAppContext ctx) =>
 {
     Log.Information("{0}", appConfig.ToStringWithoutSecrets());
     Log.Debug("{0}", appConfig.Dump());
 
-    FiatClient fiatClient = new FiatClient(appConfig.FiatUser, appConfig.FiatPw);
+    FiatClient fiatClient = new FiatClient(appConfig.FiatUser, appConfig.FiatPw, appConfig.Brand, appConfig.Region);
 
     var mqttClient = new SimpleMqttClient(appConfig.MqttServer, appConfig.MqttPort, appConfig.MqttUser, appConfig.MqttPw, "FiatUconnect");
 
