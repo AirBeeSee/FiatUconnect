@@ -1,4 +1,5 @@
 # CHANGELOG
+## 10.0.0 - 2023-07-21 : put back original coe for brand and region (jeep / alpa ... europe/us)
 ## 9.0.2 - 2023-06-23 : force refresh when detect start charging
 ## 9.0.1 - 2023-06-23 : split refresh and deeprefresh interval
 ## 9.0.0 - 2023-06-08 : add build arm7
