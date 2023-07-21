@@ -26,14 +26,14 @@ public enum FcaRegion
 
 public class FiatClient 
 {
-  private readonly string _loginApiKey = "3_mOx_J2dRgjXYCdyhchv3b5lhi54eBcdCTX4BI8MORqmZCoQWhA0mV2PTlptLGUQI";
-  private readonly string _apiKey = "qLYupk65UU1tw2Ih1cJhs4izijgRDbir2UFHA3Je";
-  private readonly string _loginUrl = "https://loginmyuconnect.fiat.com";
-  private readonly string _tokenUrl = "https://authz.sdpr-01.fcagcv.com/v2/cognito/identity/token";
-  private readonly string _apiUrl = "https://channels.sdpr-01.fcagcv.com";
-  private readonly string _authApiKey = "JWRYW7IYhW9v0RqDghQSx4UcRYRILNmc8zAuh5ys"; // for pin
-  private readonly string _authUrl = "https://mfa.fcl-01.fcagcv.com"; // for pin
-  private readonly string _locale = "de_de"; // for pin
+  private readonly string _loginApiKey = "";
+  private readonly string _apiKey= "";
+  private readonly string _loginUrl= "";
+  private readonly string _tokenUrl= "";
+  private readonly string _apiUrl= "";
+  private readonly string _authApiKey= ""; // for pin
+  private readonly string _authUrl= ""; // for pin
+  private readonly string _locale = ""; // for pin
   private readonly RegionEndpoint _awsEndpoint = RegionEndpoint.EUWest1; 
   
   private readonly string _user;
@@ -54,53 +54,9 @@ public class FiatClient
     _brand = brand;
     _region = region;
 
-    if (_brand == FcaBrand.Debug)
+    if (_region == FcaRegion.Europe)
     {
-      _loginApiKey = "3_etlYkCXNEhz4_KJVYDqnK1CqxQjvJStJMawBohJU2ch3kp30b0QCJtLCzxJ93N-M";
-      
-       _loginUrl = "https://login-us.alfaromeo.com";
-
-      _apiKey = "2wGyL6PHec9o1UeLPYpoYa1SkEWqeBur9bLsi24i";
-
-      _tokenUrl = "https://authz.sdpr-01.fcagcv.com/v2/cognito/identity/token";
-      _apiUrl = "https://channels.sdpr-01.fcagcv.com";
-      _authApiKey = "JWRYW7IYhW9v0RqDghQSx4UcRYRILNmc8zAuh5ys"; // for pin
-      _authUrl = "https://mfa.fcl-01.fcagcv.com"; // for pin
-
-       _locale = "en_us";
-      _awsEndpoint = RegionEndpoint.USEast1;
-
-  
-
-    }
-    else if (_brand == FcaBrand.Fiat)
-    {
-      if (_region == FcaRegion.Europe)
-      {
-          _loginUrl = "https://loginmyuconnect.fiat.com";
-      }
-      else
-      {
-      _loginApiKey = "3_etlYkCXNEhz4_KJVYDqnK1CqxQjvJStJMawBohJU2ch3kp30b0QCJtLCzxJ93N-M";
-      _loginUrl = "https://login-us.fiat.com";
-
-       _apiKey = "OgNqp2eAv84oZvMrXPIzP8mR8a6d9bVm1aaH9LqU";
-      _tokenUrl = "https://authz.sdpr-02.fcagcv.com/v2/cognito/identity/token";
-      _apiUrl = "https://channels.sdpr-02.fcagcv.com";
-
-      _authApiKey = "JWRYW7IYhW9v0RqDghQSx4UcRYRILNmc8zAuh5ys"; // UNKNOWN
-      _authUrl = "https://mfa.fcl-01.fcagcv.com"; // UNKNOWN
-
-      _locale = "en_us";
-      _awsEndpoint = RegionEndpoint.USEast1;
-      }
-    }
-    else if (_brand == FcaBrand.AlfaRomeo)
-    {
-      if (_region == FcaRegion.Europe)
-      {
       _loginApiKey = "3_mOx_J2dRgjXYCdyhchv3b5lhi54eBcdCTX4BI8MORqmZCoQWhA0mV2PTlptLGUQI";
-      _loginUrl = "https://login.alfaromeo.com";
 
       _apiKey = "qLYupk65UU1tw2Ih1cJhs4izijgRDbir2UFHA3Je";
       _tokenUrl = "https://authz.sdpr-01.fcagcv.com/v2/cognito/identity/token";
@@ -111,53 +67,65 @@ public class FiatClient
 
       _locale = "de_de"; // for pin
       _awsEndpoint = RegionEndpoint.EUWest1; 
-      }
-      else
-      {
-      _loginApiKey = "3_etlYkCXNEhz4_KJVYDqnK1CqxQjvJStJMawBohJU2ch3kp30b0QCJtLCzxJ93N-M";
-      _loginUrl = "https://login-us.alfaromeo.com";      
+    }
+    else
+    {
+      _loginApiKey = "3_FSxGyaktviayTDRcgp9r9o2KjuFSrHT13wWNN9zPrvAGUCoXPDqoIPOwlBUhck4A";
 
-      _apiKey = "OgNqp2eAv84oZvMrXPIzP8mR8a6d9bVm1aaH9LqU";
+       _apiKey = "OgNqp2eAv84oZvMrXPIzP8mR8a6d9bVm1aaH9LqU";
       _tokenUrl = "https://authz.sdpr-02.fcagcv.com/v2/cognito/identity/token";
       _apiUrl = "https://channels.sdpr-02.fcagcv.com";
 
-      _authApiKey = "JWRYW7IYhW9v0RqDghQSx4UcRYRILNmc8zAuh5ys"; // UNKNOWN
-      _authUrl = "https://mfa.fcl-01.fcagcv.com"; // UNKNOWN
+      _authApiKey = "fNQO6NjR1N6W0E5A6sTzR3YY4JGbuPv48Nj9aZci"; // UNKNOWN
+      _authUrl = "https://mfa.fcl-02.fcagcv.com"; // UNKNOWN
 
       _locale = "en_us";
       _awsEndpoint = RegionEndpoint.USEast1;
+    }
+
+    if (_brand == FcaBrand.Debug)
+    {
+      _loginApiKey = "3_etlYkCXNEhz4_KJVYDqnK1CqxQjvJStJMawBohJU2ch3kp30b0QCJtLCzxJ93N-M";
+       _loginUrl = "https://login-us.alfaromeo.com";
+      _apiKey = "2wGyL6PHec9o1UeLPYpoYa1SkEWqeBur9bLsi24i";
+      _tokenUrl = "https://authz.sdpr-01.fcagcv.com/v2/cognito/identity/token";
+      _apiUrl = "https://channels.sdpr-01.fcagcv.com";
+      _authApiKey = "JWRYW7IYhW9v0RqDghQSx4UcRYRILNmc8zAuh5ys"; // for pin
+      _authUrl = "https://mfa.fcl-01.fcagcv.com"; // for pin
+       _locale = "en_us";
+      _awsEndpoint = RegionEndpoint.USEast1;
+    }
+    else if (_brand == FcaBrand.Fiat)
+    {
+      if (_region == FcaRegion.Europe)
+      {
+        _loginUrl = "https://loginmyuconnect.fiat.com";
+      }
+      else
+      {
+        _loginUrl = "https://login-us.fiat.com";
+      }
+    }
+    else if (_brand == FcaBrand.AlfaRomeo)
+    {
+      if (_region == FcaRegion.Europe)
+      {
+        _loginUrl = "https://login.alfaromeo.com";
+      }
+      else
+      {
+      _ loginUrl = "https://login-us.alfaromeo.com";      
       }
     }
     else if (_brand == FcaBrand.Jeep)
     {
       if (_region == FcaRegion.Europe)
       {
-        _loginApiKey = "3_ZvJpoiZQ4jT5ACwouBG5D1seGEntHGhlL0JYlZNtj95yERzqpH4fFyIewVMmmK7j";
         _loginUrl = "https://login.jeep.com";
-
-        _apiKey = "qLYupk65UU1tw2Ih1cJhs4izijgRDbir2UFHA3Je";
-        _tokenUrl = "https://authz.sdpr-01.fcagcv.com/v2/cognito/identity/token";
-        _apiUrl = "https://channels.sdpr-01.fcagcv.com";
-
-        _authApiKey = "JWRYW7IYhW9v0RqDghQSx4UcRYRILNmc8zAuh5ys"; // for pin
-        _authUrl = "https://mfa.fcl-01.fcagcv.com"; // for pin
-
-        _locale = "de_de"; // for pin
-        _awsEndpoint = RegionEndpoint.EUWest1; 
       }
       else
       {
-        _loginApiKey = "3_5qxvrevRPG7--nEXe6huWdVvF5kV7bmmJcyLdaTJ8A45XUYpaR398QNeHkd7EB1X";
         _loginUrl = "https://login-us.jeep.com";
-        _apiKey = "OgNqp2eAv84oZvMrXPIzP8mR8a6d9bVm1aaH9LqU";
-
-        _tokenUrl = "https://authz.sdpr-02.fcagcv.com/v2/cognito/identity/token";
-        _apiUrl = "https://channels.sdpr-02.fcagcv.com";
-      
-        _authApiKey = "fNQO6NjR1N6W0E5A6sTzR3YY4JGbuPv48Nj9aZci"; 
-        _authUrl = "https://mfa.fcl-02.fcagcv.com"; 
-        _awsEndpoint = RegionEndpoint.USEast1;
-        _locale = "en_us";
       }
     }
 
