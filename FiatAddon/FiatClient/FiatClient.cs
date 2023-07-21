@@ -88,7 +88,7 @@ public class FiatClient
       {
       _loginApiKey = "3_mOx_J2dRgjXYCdyhchv3b5lhi54eBcdCTX4BI8MORqmZCoQWhA0mV2PTlptLGUQI";
       _apiKey = "2wGyL6PHec9o1UeLPYpoYa1SkEWqeBur9bLsi24i";
-      _loginUrl = "https://loginmyalfaconnect.alfaromeo.com";
+      _loginUrl = "https://login.alfaromeo.com";
       _tokenUrl = "https://authz.sdpr-01.fcagcv.com/v2/cognito/identity/token";
       _apiUrl = "https://channels.sdpr-01.fcagcv.com";
       _authApiKey = "JWRYW7IYhW9v0RqDghQSx4UcRYRILNmc8zAuh5ys"; // for pin
