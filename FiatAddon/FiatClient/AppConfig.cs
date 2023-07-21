@@ -18,6 +18,9 @@ public record AppConfig
   [Required(AllowEmptyStrings = false)]
   public string SupervisorToken { get; set; } = null!;
 
+  public FcaBrand Brand { get; set; }
+  public FcaRegion Region { get; set; } = FcaRegion.Europe;
+
   public string HomeAssistantUrl { get; set; } = "http://supervisor/core";
   public int StartDelaySeconds { get; set; } = 2; 
 
