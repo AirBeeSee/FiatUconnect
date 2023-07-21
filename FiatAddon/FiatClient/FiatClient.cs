@@ -22,7 +22,7 @@ public enum FcaBrand
 public enum FcaRegion
 {
   Europe,
-  America
+  US
 }
 
 public class FiatClient 
@@ -79,7 +79,7 @@ public class FiatClient
       _awsEndpoint = RegionEndpoint.USEast1;
       _locale = "en_us";
     }
-    else if (_brand == FcaBrand.Fiat && _region == FcaRegion.America)
+    else if (_brand == FcaBrand.Fiat && _region == FcaRegion.US)
     {
       _loginApiKey = "3_etlYkCXNEhz4_KJVYDqnK1CqxQjvJStJMawBohJU2ch3kp30b0QCJtLCzxJ93N-M";
       _apiKey = "OgNqp2eAv84oZvMrXPIzP8mR8a6d9bVm1aaH9LqU";
@@ -91,7 +91,7 @@ public class FiatClient
       _awsEndpoint = RegionEndpoint.USEast1;
       _locale = "en_us";
     }
-    else if (_brand == FcaBrand.AlfaRomeo && _region == FcaRegion.America)
+    else if (_brand == FcaBrand.AlfaRomeo && _region == FcaRegion.US)
     {
       _loginApiKey = "3_etlYkCXNEhz4_KJVYDqnK1CqxQjvJStJMawBohJU2ch3kp30b0QCJtLCzxJ93N-M";
       _apiKey = "OgNqp2eAv84oZvMrXPIzP8mR8a6d9bVm1aaH9LqU";
@@ -105,7 +105,7 @@ public class FiatClient
     }
     else if (_brand == FcaBrand.Jeep)
     {
-      if (_region == FcaRegion.Europe)
+      if (_region == FcaRegion.US)
       {
         _loginApiKey = "3_ZvJpoiZQ4jT5ACwouBG5D1seGEntHGhlL0JYlZNtj95yERzqpH4fFyIewVMmmK7j";
         _loginUrl = "https://login.jeep.com";
