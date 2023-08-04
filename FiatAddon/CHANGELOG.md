@@ -1,5 +1,5 @@
 # CHANGELOG
-## 11.0.0 - 2023-08-04 : add VIN to entity name 
+## 11.0.0 - 2023-08-04 : remove device name from entity name
 ## 10.0.0 - 2023-07-21 : put back original coe for brand and region (jeep / alpa ... europe/us)
 ## 9.0.2 - 2023-06-23 : force refresh when detect start charging
 ## 9.0.1 - 2023-06-23 : split refresh and deeprefresh interval
