@@ -82,11 +82,11 @@ _ = Task.Run(async () =>
 
             foreach (var vehicle in await fiatClient.Fetch())
             {
-                Log.Information($"Found : {vehicle.Nickname} {vehicle.Vin}");
+                Log.Information($"Found : {vehicle.Nickname} {vehicle.Vin} {vehicle.Model} {vehicle.ModelDescription}");
               
                 var haDevice = new HaDevice()
                 {
-                    Name = string.IsNullOrEmpty(vehicle.Nickname) ? "Fiat" : vehicle.Nickname,
+                    Name = string.IsNullOrEmpty(vehicle.Nickname) ? vehicle.Vin : vehicle.Nickname,
                     Identifier = vehicle.Vin,
                     Manufacturer = vehicle.Make,
                     Model = vehicle.ModelDescription,
@@ -108,10 +108,7 @@ _ = Task.Run(async () =>
                 Log.Information("Pushing sensors values to Home Assistant");
                 await Parallel.ForEachAsync(haEntities, async (sensor, token) => { await sensor.PublishState(); });
 
-                var lastUpdate = new HaSensor(mqttClient, "500e_LastUpdate", haDevice, false) 
-                { Value = DateTime.Now.ToString("dd/MM HH:mm:ss")
-                //, DeviceClass = "timestamp" 
-                };
+                var lastUpdate = new HaSensor(mqttClient, "500e_LastUpdate", haDevice, false) { Value = DateTime.Now.ToString("dd/MM HH:mm:ss") };
                 
                 await lastUpdate.Announce();
                 await lastUpdate.PublishState();
