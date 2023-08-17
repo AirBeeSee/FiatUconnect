@@ -82,7 +82,7 @@ _ = Task.Run(async () =>
 
             foreach (var vehicle in await fiatClient.Fetch())
             {
-                Log.Information($"Found : {vehicle.Nickname} {vehicle.Vin} {vehicle.Model} {vehicle.ModelDescription}");
+                Log.Information($"Found : {vehicle.Nickname} {vehicle.Vin} {vehicle.ModelDescription}");
               
                 var haDevice = new HaDevice()
                 {
@@ -108,7 +108,7 @@ _ = Task.Run(async () =>
                 Log.Information("Pushing sensors values to Home Assistant");
                 await Parallel.ForEachAsync(haEntities, async (sensor, token) => { await sensor.PublishState(); });
 
-                var lastUpdate = new HaSensor(mqttClient, "500e_LastUpdate", haDevice, false) { Value = DateTime.Now.ToString("dd/MM HH:mm:ss") };
+                var lastUpdate = new HaSensor(mqttClient, $"{vehicle.ModelDescription}_LastUpdate", haDevice, false) { Value = DateTime.Now.ToString("dd/MM HH:mm:ss") };
                 
                 await lastUpdate.Announce();
                 await lastUpdate.PublishState();
@@ -171,7 +171,7 @@ async Task<bool> TrySendCommand(FiatClient fiatClient, FiatCommand command, stri
 IEnumerable<HaEntity> CreateInteractiveEntities(CoconaAppContext ctx, FiatClient fiatClient, SimpleMqttClient mqttClient, Vehicle vehicle,
   HaDevice haDevice)
 {
-    var updateLocationButton = new HaButton(mqttClient, "500e_UpdateLocation", haDevice, async button =>
+    var updateLocationButton = new HaButton(mqttClient, $"{vehicle.ModelDescription}_UpdateLocation", haDevice, async button =>
     {
         if (await TrySendCommand(fiatClient, FiatCommand.VF, vehicle.Vin))
         {
@@ -180,7 +180,7 @@ IEnumerable<HaEntity> CreateInteractiveEntities(CoconaAppContext ctx, FiatClient
         }
     });
 
-    var deepRefreshButton = new HaButton(mqttClient, "500e_DeepRefresh", haDevice, async button =>
+    var deepRefreshButton = new HaButton(mqttClient, $"{vehicle.ModelDescription}_DeepRefresh", haDevice, async button =>
     {
         if (vinPlugged.Contains(vehicle.Vin))
         {
@@ -192,7 +192,7 @@ IEnumerable<HaEntity> CreateInteractiveEntities(CoconaAppContext ctx, FiatClient
         }
     });
 
-    var lightsButton = new HaButton(mqttClient, "500e_Light", haDevice, async button =>
+    var lightsButton = new HaButton(mqttClient, $"{vehicle.ModelDescription}_Light", haDevice, async button =>
     {
         if (await TrySendCommand(fiatClient, FiatCommand.ROLIGHTS, vehicle.Vin))
         {
@@ -200,7 +200,7 @@ IEnumerable<HaEntity> CreateInteractiveEntities(CoconaAppContext ctx, FiatClient
         }
     });
 
-    var chargeNowButton = new HaButton(mqttClient, "500e_ChargeNOW", haDevice, async button =>
+    var chargeNowButton = new HaButton(mqttClient, $"{vehicle.ModelDescription}_ChargeNOW", haDevice, async button =>
     {
         if (await TrySendCommand(fiatClient, FiatCommand.CNOW, vehicle.Vin))
         {
@@ -209,7 +209,7 @@ IEnumerable<HaEntity> CreateInteractiveEntities(CoconaAppContext ctx, FiatClient
     });
 
 
-    var hvacButton = new HaButton(mqttClient, "500e_HVAC", haDevice, async button =>
+    var hvacButton = new HaButton(mqttClient, $"{vehicle.ModelDescription}_HVAC", haDevice, async button =>
     {
         if (await TrySendCommand(fiatClient, FiatCommand.ROPRECOND, vehicle.Vin))
         {
@@ -218,7 +218,7 @@ IEnumerable<HaEntity> CreateInteractiveEntities(CoconaAppContext ctx, FiatClient
     });
 
 
-    var lockButton = new HaButton(mqttClient, "500e_DoorLock", haDevice, async button =>
+    var lockButton = new HaButton(mqttClient, $"{vehicle.ModelDescription}_DoorLock", haDevice, async button =>
     {
         if (await TrySendCommand(fiatClient, FiatCommand.RDL, vehicle.Vin))
         {
@@ -226,7 +226,7 @@ IEnumerable<HaEntity> CreateInteractiveEntities(CoconaAppContext ctx, FiatClient
         }
     });
 
-    var unLockButton = new HaButton(mqttClient, "500e_DoorUnLock", haDevice, async button =>
+    var unLockButton = new HaButton(mqttClient, $"{vehicle.ModelDescription}_DoorUnLock", haDevice, async button =>
     {
         if (await TrySendCommand(fiatClient, FiatCommand.RDU, vehicle.Vin))
         {
@@ -234,7 +234,7 @@ IEnumerable<HaEntity> CreateInteractiveEntities(CoconaAppContext ctx, FiatClient
         }
     });
 
-    var fetchNowButton = new HaButton(mqttClient, "500e_FetchNow", haDevice, async button =>
+    var fetchNowButton = new HaButton(mqttClient, $"{vehicle.ModelDescription}_FetchNow", haDevice, async button =>
     {
         Log.Information($"Force Fetch Now");
         await Task.Run(() => forceLoopResetEvent.Set());
@@ -249,7 +249,7 @@ IEnumerable<HaEntity> CreateInteractiveEntities(CoconaAppContext ctx, FiatClient
 
 async Task<IEnumerable<HaEntity>> GetHaEntities(HaRestApi haClient, SimpleMqttClient mqttClient, Vehicle vehicle, HaDevice haDevice)
 {
-    var compactDetails = vehicle.Details.Compact("500e");
+    var compactDetails = vehicle.Details.Compact(vehicle.ModelDescription);
 
     bool charging = false;
     string charginglevel = "battery_timetofullychargel2";
@@ -364,13 +364,13 @@ async Task<IEnumerable<HaEntity>> GetHaEntities(HaRestApi haClient, SimpleMqttCl
         vinCharging.Remove(vehicle.Vin);
     }
 
-    haEntities.Add(new HaSensor(mqttClient, "500e_Charge_Duration", haDevice, false)
+    haEntities.Add(new HaSensor(mqttClient, $"{vehicle.ModelDescription}_Charge_Duration", haDevice, false)
     {
       //  DeviceClass = "duration",
         Value = textChargeDuration,
     });
 
-    haEntities.Add(new HaSensor(mqttClient, "500e_Charge_Endtime", haDevice, false)
+    haEntities.Add(new HaSensor(mqttClient, $"{vehicle.ModelDescription}_Charge_Endtime", haDevice, false)
     {
       //  DeviceClass = "duration",
         Value = textChargeEndTime,
@@ -382,7 +382,7 @@ async Task<IEnumerable<HaEntity>> GetHaEntities(HaRestApi haClient, SimpleMqttCl
 
     Log.Debug("Zones: {0}", zones.Dump());
 
-    var tracker = new HaDeviceTracker(mqttClient, "500e_Location", haDevice)
+    var tracker = new HaDeviceTracker(mqttClient, $"{vehicle.ModelDescription}_Location", haDevice)
     {
         Lat = currentCarLocation.Latitude.ToDouble(),
         Lon = currentCarLocation.Longitude.ToDouble(),
@@ -391,7 +391,7 @@ async Task<IEnumerable<HaEntity>> GetHaEntities(HaRestApi haClient, SimpleMqttCl
 
     haEntities.Add(tracker);
 
-    var trackerTimeStamp = new HaSensor(mqttClient, "500e_Location_TimeStamp", haDevice, false)
+    var trackerTimeStamp = new HaSensor(mqttClient, $"{vehicle.ModelDescription}_Location_TimeStamp", haDevice, false)
     {
         Value = GetLocalTime(vehicle.Location.TimeStamp).ToString("dd/MM HH:mm:ss"),
         //DeviceClass = "duration"
