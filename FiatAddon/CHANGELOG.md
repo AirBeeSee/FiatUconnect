@@ -1,4 +1,5 @@
 # CHANGELOG
+## 12.1.0 - 2023-08-04 : remove suffix "vehicle.ModelDescription"
 ## 12.0.0 - 2023-08-17 : replace "500e" suffix with "vehicle.ModelDescription" 
 ## 11.0.0 - 2023-08-04 : remove device name from entity name
 ## 10.0.0 - 2023-07-21 : put back original coe for brand and region (jeep / alpa ... europe/us)
