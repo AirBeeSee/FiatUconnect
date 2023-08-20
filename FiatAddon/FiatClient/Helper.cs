@@ -11,21 +11,23 @@ namespace FiatUconnect;
 
 public static class Helper
 {
-    public static Dictionary<string, string> Compact(this JToken container, string key = "root", Dictionary<string, string>? result = null)
+    public static Dictionary<string, string> Compact(this JToken container, string key, Dictionary<string, string>? result = null)
     {
         if (result == null) { result = new Dictionary<string, string>(); }
+
+        string refKey = string.IsNullOrWhiteSpace(key) ? "" : $"{key}_";
 
         switch (container)
         {
             case JValue value:
-                result.Add(key, value.Value?.ToString() ?? "null");
+                result.Add(refKey, value.Value?.ToString() ?? "null");
                 break;
             case JArray array:
                 {
                     for (int i = 0; i < array.Count(); i++)
                     {
                         var token = array[i];
-                        token.Compact($"{key}_array_{i}", result);
+                        token.Compact($"{refKey}array_{i}", result);
                     }
 
                     break;
@@ -35,7 +37,7 @@ public static class Helper
                 {
                     foreach (var kv in obj)
                     {
-                        kv.Value.Compact($"{key}_{kv.Key}", result);
+                        kv.Value.Compact($"{refKey}{kv.Key}", result);
                     }
 
                     break;
