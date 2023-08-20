@@ -20,7 +20,7 @@ public static class Helper
         switch (container)
         {
             case JValue value:
-                result.Add(refKey, value.Value?.ToString() ?? "null");
+                result.Add(key, value.Value?.ToString() ?? "null");
                 break;
             case JArray array:
                 {
