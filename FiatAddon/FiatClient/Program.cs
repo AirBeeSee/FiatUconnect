@@ -192,15 +192,6 @@ IEnumerable<HaEntity> CreateInteractiveEntities(CoconaAppContext ctx, FiatClient
         }
     });
 
-    var forceDeepRefreshButton = new HaButton(mqttClient, "ForceDeepRefresh", haDevice, async button =>
-    {
-            if (await TrySendCommand(fiatClient, FiatCommand.DEEPREFRESH, vehicle.Vin))
-            {
-                await Task.Delay(TimeSpan.FromSeconds(6), ctx.CancellationToken);
-                forceLoopResetEvent.Set();
-            }
-    });
-
     var lightsButton = new HaButton(mqttClient, "Light", haDevice, async button =>
     {
         if (await TrySendCommand(fiatClient, FiatCommand.ROLIGHTS, vehicle.Vin))
@@ -249,7 +240,7 @@ IEnumerable<HaEntity> CreateInteractiveEntities(CoconaAppContext ctx, FiatClient
         await Task.Run(() => forceLoopResetEvent.Set());
     });
 
-    var haEntities = new HaEntity[] { hvacButton, chargeNowButton, deepRefreshButton,forceDeepRefreshButton, lightsButton, updateLocationButton, lockButton, unLockButton, fetchNowButton };
+    var haEntities = new HaEntity[] { hvacButton, chargeNowButton, deepRefreshButton, lightsButton, updateLocationButton, lockButton, unLockButton, fetchNowButton };
 
     Log.Debug("Announce haEntities : {0}", haEntities.Dump());
 
