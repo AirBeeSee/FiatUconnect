@@ -182,7 +182,7 @@ IEnumerable<HaEntity> CreateInteractiveEntities(CoconaAppContext ctx, FiatClient
 
     var deepRefreshButton = new HaButton(mqttClient, "DeepRefresh", haDevice, async button =>
     {
-        if (vinPlugged.Contains(vehicle.Vin))
+     //   if (vinPlugged.Contains(vehicle.Vin))
         {
             if (await TrySendCommand(fiatClient, FiatCommand.DEEPREFRESH, vehicle.Vin))
             {
